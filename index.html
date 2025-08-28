@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Desenho: Avião em SVG</title>
+  <style>
+    :root{
+      --sky: #bfe9ff;
+      --fuselage: #2b6cb0;
+      --wing: #1e90ff;
+      --accent: #ffd166;
+      --window: #ffffffcc;
+      --shadow: rgba(0,0,0,0.12);
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--sky), #e6f7ff 60%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .canvas-wrap {
+      width:920px;
+      max-width:95vw;
+      background: linear-gradient(#ffffffee, #f3fbff);
+      border-radius:14px;
+      box-shadow: 0 8px 30px var(--shadow);
+      padding:18px;
+    }
+
+    header{
+      text-align:center;
+      margin-bottom:8px;
+    }
+    h1{font-size:18px;margin:0 0 6px 0}
+    p{margin:0;color:#234}
+
+    svg { width:100%; height:auto; display:block; }
+
+    /* estilo para pequenas instruções visíveis no svg (opcional) */
+    .guide { font: 12px/1 "Segoe UI", Arial; fill:#034; opacity:0.75; }
+  </style>
+</head>
+<body>
+  <div class="canvas-wrap">
+    <header>
+      <h1>Desenho SVG: Avião</h1>
+      <p>Estruturado em grupos (fuselagem, asas, cauda, janelas, hélice)</p>
+    </header>
+
+    <!-- SVG principal -->
+    <svg viewBox="0 0 920 400" role="img" aria-label="Desenho de um avião em formato vetorial">
+      <!-- chão / nuvens (simples) -->
+      <defs>
+        <linearGradient id="glassGrad" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+          <stop offset="1" stop-color="#e6f7ff" stop-opacity="0.6"/>
+        </linearGradient>
+
+        <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="b"/>
+          <feOffset dx="0" dy="6" result="o"/>
+          <feMerge>
+            <feMergeNode in="o"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- decor: nuvens -->
+      <g transform="translate(20,30)" opacity="0.9">
+        <ellipse cx="120" cy="40" rx="70" ry="24" fill="#fff" />
+        <ellipse cx="200" cy="50" rx="54" ry="20" fill="#fff" />
+        <ellipse cx="320" cy="35" rx="72" ry="26" fill="#fff" />
+      </g>
+
+      <!-- sombra do avião -->
+      <ellipse cx="520" cy="340" rx="140" ry="18" fill="#000" opacity="0.06" transform="translate(-20,0)"/>
+
+      <!-- grupo do avião (central) -->
+      <g id="aviao" transform="translate(120,80) scale(1.0)">
+
+        <!-- Asa principal - usando path para forma mais natural -->
+        <path d="M420 130
+                 C290 120, 160 120, 40 140
+                 C20 143, 6 150, 4 160
+                 C3 165, 10 168, 20 170
+                 C120 186, 260 200, 420 176
+                 Z"
+              fill="url(#glassGrad)" stroke="#0d63a9" stroke-width="2" />
+
+        <!-- Asa inferior (pequena) -->
+        <path d="M280 188
+                 C220 196, 180 200, 120 200
+                 C100 200, 70 196, 40 192
+                 C30 191, 26 186, 28 180
+                 C34 160, 170 170, 280 162
+                 Z"
+              fill="var(--wing)" stroke="#0c5aa0" stroke-width="2" opacity="0.98"/>
+
+        <!-- Fuselagem (corpo) -->
+        <g id="fuselage" transform="translate(0,0)">
+          <path d="M20 160 
+                   C40 140, 90 120, 170 112
+                   C240 106, 330 106, 430 130
+                   C470 140, 490 152, 510 170
+                   C525 182, 540 200, 520 218
+                   C500 238, 460 250, 380 248
+                   C300 246, 220 220, 120 200
+                   C80 192, 36 186, 20 160 Z"
+                fill="var(--fuselage)" stroke="#103f6b" stroke-width="3" filter="url(#softShadow)"/>
+          
+          <!-- Janela do cockpit -->
+          <path d="M150 118
+                   C160 112, 190 110, 220 115
+                   C230 117, 230 125, 215 128
+                   C190 133, 165 132, 150 126 Z"
+                fill="#ffffffcc" stroke="#cfe6ff" stroke-width="1"/>
+
+          <!-- Janelas de passageiro (repetidas) -->
+          <g id="windows" transform="translate(240,140)">
+            <circle cx="0" cy="0" r="8" fill="var(--window)"/>
+            <circle cx="32" cy="-2" r="8" fill="var(--window)"/>
+            <circle cx="64" cy="-3" r="8" fill="var(--window)"/>
+            <circle cx="100" cy="-1" r="8" fill="var(--window)"/>
+            <circle cx="138" cy="1" r="8" fill="var(--window)"/>
+          </g>
+
+          <!-- Porta / detalhe -->
+          <rect x="98" y="170" width="34" height="18" rx="3" fill="#164a78" stroke="#0e3451" stroke-width="1"/>
+
+        </g>
+
+        <!-- Cauda vertical -->
+        <g id="tail" transform="translate(420,80)">
+          <path d="M0 0 L40 -44 L60 -38 L28 6 Z" fill="var(--fuselage)" stroke="#0e3b62" stroke-width="2"/>
+          <path d="M12 -8 L50 -46 L54 -42 L20 -4 Z" fill="var(--accent)" opacity="0.9"/>
+        </g>
+
+        <!-- Hélice frontal (círculo + pás) -->
+        <g id="propeller" transform="translate(520,170)">
+          <circle cx="0" cy="0" r="18" fill="#111827" />
+          <g id="pás">
+            <path d="M0 0 L40 -10 C55 -6, 55 6, 40 10 Z" transform="rotate(0)" opacity="0.95"/>
+            <path d="M0 0 L-40 -10 C-55 -6, -55 6, -40 10 Z" transform="rotate(120)" opacity="0.95"/>
+            <path d="M0 0 L40 -10 C55 -6, 55 6, 40 10 Z" transform="rotate(240)" opacity="0.95"/>
+          </g>
+        </g>
+
+      </g>
+
+      <!-- pequena legenda/guia para entender formas -->
+      <text x="18" y="22" class="guide">1. Fuselagem (corpo) • 2. Asas • 3. Cauda • 4. Janelas • 5. Hélice</text>
+    </svg>
+
+  </div>
+</body>
+</html>
